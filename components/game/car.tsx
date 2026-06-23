@@ -3,7 +3,8 @@
 import { useRef } from "react"
 import { useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
-import { useControls } from "./use-controls"
+import type { Keys } from "./use-controls"
+import { keepPointOnRoad } from "@/lib/road-path"
 
 export type CarState = {
   x: number
@@ -19,10 +20,15 @@ const BRAKE = 28
 const FRICTION = 9
 const TURN_RATE = 1.7
 
-export function Car({ stateRef }: { stateRef: React.MutableRefObject<CarState> }) {
+export function Car({
+  stateRef,
+  controlsRef,
+}: {
+  stateRef: React.MutableRefObject<CarState>
+  controlsRef: React.MutableRefObject<Keys>
+}) {
   const group = useRef<THREE.Group>(null)
   const wheels = useRef<THREE.Mesh[]>([])
-  const keys = useControls()
   const { camera } = useThree()
 
   // Persistent vectors to avoid per-frame allocations.
@@ -32,7 +38,7 @@ export function Car({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
   useFrame((_, rawDelta) => {
     const delta = Math.min(rawDelta, 0.05)
     const s = stateRef.current
-    const k = keys.current
+    const k = controlsRef.current
 
     // Longitudinal motion
     if (k.forward) s.speed += ACCEL * delta
@@ -58,6 +64,16 @@ export function Car({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
     const fz = -Math.cos(s.angle)
     s.x += fx * s.speed * delta
     s.z += fz * s.speed * delta
+
+    const roadPosition = keepPointOnRoad(s.x, s.z)
+    if (roadPosition.hitBoundary) {
+      s.speed *= 0.72
+      s.x = THREE.MathUtils.lerp(s.x, roadPosition.x, 0.85)
+      s.z = THREE.MathUtils.lerp(s.z, roadPosition.z, 0.85)
+    } else {
+      s.x = roadPosition.x
+      s.z = roadPosition.z
+    }
 
     if (group.current) {
       group.current.position.set(s.x, 0, s.z)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, type MutableRefObject } from "react"
 
 export type Keys = {
   forward: boolean
@@ -24,10 +24,20 @@ const KEY_MAP: Record<string, keyof Keys> = {
   D: "right",
 }
 
-export function useControls() {
-  const keys = useRef<Keys>({ forward: false, back: false, left: false, right: false })
+export function resetControls(keys: MutableRefObject<Keys>) {
+  keys.current.forward = false
+  keys.current.back = false
+  keys.current.left = false
+  keys.current.right = false
+}
 
+export function useKeyboardControls(keys: MutableRefObject<Keys>, enabled = true) {
   useEffect(() => {
+    if (!enabled) {
+      resetControls(keys)
+      return
+    }
+
     const onDown = (e: KeyboardEvent) => {
       const mapped = KEY_MAP[e.key]
       if (mapped) {
@@ -45,8 +55,7 @@ export function useControls() {
     return () => {
       window.removeEventListener("keydown", onDown)
       window.removeEventListener("keyup", onUp)
+      resetControls(keys)
     }
-  }, [])
-
-  return keys
+  }, [enabled, keys])
 }

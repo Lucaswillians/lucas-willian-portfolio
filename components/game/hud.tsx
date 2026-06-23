@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type ComponentType } from "react"
 import { ExternalLink, Mail, Phone } from "lucide-react"
 import type { CarState } from "./car"
 import { CONTACTS, SECTIONS, type BillboardSection, type Contact } from "@/lib/portfolio-data"
-import { pointBesideRoad, ROAD_WIDTH } from "@/lib/road-path"
+import { BILLBOARD_DISTANCE_FROM_ROAD, pointBesideRoad, ROAD_WIDTH } from "@/lib/road-path"
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -29,15 +29,41 @@ const NEAR_DISTANCE = 17 // distância (unidades) para considerar que o carro "c
 // Posições (x,z) de cada placa ao lado da estrada, pré-calculadas uma vez.
 const BILLBOARD_POSITIONS = SECTIONS.map((s) => {
   const sideSign = s.side === "left" ? -1 : 1
-  const p = pointBesideRoad(s.t, sideSign, ROAD_WIDTH / 2 + 4.5)
+  const p = pointBesideRoad(s.t, sideSign, ROAD_WIDTH / 2 + BILLBOARD_DISTANCE_FROM_ROAD)
   return { section: s, x: p.x, z: p.z }
 })
 
-const CONTACT_ICON: Record<Contact["kind"], (props: { className?: string }) => JSX.Element> = {
+const CONTACT_ICON: Record<Contact["kind"], ComponentType<{ className?: string }>> = {
   email: Mail,
   phone: Phone,
   github: GithubIcon,
   linkedin: LinkedinIcon,
+}
+
+type RouteNotice = {
+  title: string
+  body: string
+  accent: string
+}
+
+function getRouteNotice(section: BillboardSection): RouteNotice | null {
+  if (section.kind === "experience") {
+    return {
+      title: "Experiência profissional",
+      body: "Você chegou na parte das minhas experiências profissionais.",
+      accent: section.accent,
+    }
+  }
+
+  if (section.kind === "education") {
+    return {
+      title: "Formações e projetos",
+      body: "Você chegou na parte das minhas formações e projetos.",
+      accent: section.accent,
+    }
+  }
+
+  return null
 }
 
 export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }) {
@@ -45,7 +71,11 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
   const speedEl = useRef<HTMLSpanElement>(null)
   const [moved, setMoved] = useState(false)
   const [active, setActive] = useState<BillboardSection | null>(null)
+  const [notice, setNotice] = useState<RouteNotice | null>(null)
   const activeIdRef = useRef<string | null>(null)
+  const movedRef = useRef(false)
+  const noticeTimerRef = useRef(0)
+  const noticedKindsRef = useRef(new Set<BillboardSection["kind"]>())
 
   useEffect(() => {
     let raf = 0
@@ -54,7 +84,10 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
       const progress = Math.min(1, Math.max(0, (START_Z - s.z) / (START_Z - END_Z)))
       if (bar.current) bar.current.style.width = `${progress * 100}%`
       if (speedEl.current) speedEl.current.textContent = String(Math.round(Math.abs(s.speed) * 4))
-      if (!moved && Math.abs(s.speed) > 2) setMoved(true)
+      if (!movedRef.current && Math.abs(s.speed) > 2) {
+        movedRef.current = true
+        setMoved(true)
+      }
 
       // Encontra a placa mais próxima do carro.
       let best = Number.POSITIVE_INFINITY
@@ -75,11 +108,24 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
         setActive(within)
       }
 
+      if (within && movedRef.current && !noticedKindsRef.current.has(within.kind)) {
+        const nextNotice = getRouteNotice(within)
+        if (nextNotice) {
+          noticedKindsRef.current.add(within.kind)
+          window.clearTimeout(noticeTimerRef.current)
+          setNotice(nextNotice)
+          noticeTimerRef.current = window.setTimeout(() => setNotice(null), 4300)
+        }
+      }
+
       raf = requestAnimationFrame(loop)
     }
     raf = requestAnimationFrame(loop)
-    return () => cancelAnimationFrame(raf)
-  }, [stateRef, moved])
+    return () => {
+      cancelAnimationFrame(raf)
+      window.clearTimeout(noticeTimerRef.current)
+    }
+  }, [stateRef])
 
   const showProjectCard = active?.kind === "project" && !!active.link
   const showContactCard = active?.kind === "outro"
@@ -106,6 +152,21 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
         </span>
         <span className="ml-1 text-xs tracking-widest text-[#ffd23f]/70">KM/H</span>
       </div>
+
+      {/* Route notice */}
+      {notice && (
+        <div className="absolute left-1/2 top-20 w-[90%] max-w-md -translate-x-1/2 md:top-24">
+          <div
+            className="rounded-lg border bg-black/70 px-4 py-3 text-center backdrop-blur-md"
+            style={{ borderColor: notice.accent, boxShadow: `0 0 24px ${notice.accent}66` }}
+          >
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em]" style={{ color: notice.accent }}>
+              {notice.title}
+            </p>
+            <p className="mt-1 text-sm text-white md:text-base">{notice.body}</p>
+          </div>
+        </div>
+      )}
 
       {/* Progress bar */}
       <div className="absolute bottom-16 left-1/2 w-[80%] max-w-md -translate-x-1/2 md:bottom-20">
@@ -135,14 +196,20 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
 
       {/* Botão de projeto — aparece ao chegar perto da placa */}
       {showProjectCard && active && (
-        <div className="pointer-events-auto absolute left-1/2 top-20 w-[88%] max-w-xs -translate-x-1/2 md:top-24">
+        <div
+          className={`pointer-events-auto absolute left-1/2 w-[88%] max-w-xs -translate-x-1/2 ${
+            notice ? "top-40 md:top-44" : "top-20 md:top-24"
+          }`}
+        >
           <div
             className="rounded-xl border bg-black/70 p-4 text-center backdrop-blur-md"
             style={{ borderColor: active.accent, boxShadow: `0 0 24px ${active.accent}55` }}
           >
-            <p className="text-[10px] tracking-[0.3em]" style={{ color: active.accent }}>
-              {active.tag}
-            </p>
+            {active.tag && (
+              <p className="text-[10px] tracking-[0.3em]" style={{ color: active.accent }}>
+                {active.tag}
+              </p>
+            )}
             <p className="mt-1 text-base font-bold text-white">{active.title}</p>
             <a
               href={active.link}

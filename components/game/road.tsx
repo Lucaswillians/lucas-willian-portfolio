@@ -9,7 +9,7 @@ const SEGMENTS = 600
 const UP = new THREE.Vector3(0, 1, 0)
 
 export function Road() {
-  const { geometry, leftEdge, rightEdge, dashes } = useMemo(() => {
+  const { geometry, leftEdge, rightEdge, dashes, fencePosts, leftFenceTop, leftFenceMid, rightFenceTop, rightFenceMid } = useMemo(() => {
     const points = roadCurve.getSpacedPoints(SEGMENTS)
     const positions: number[] = []
     const uvs: number[] = []
@@ -54,7 +54,31 @@ export function Road() {
       dashes.push([roadCurve.getPointAt(t0).setY(0.07), roadCurve.getPointAt(t1).setY(0.07)])
     }
 
-    return { geometry, leftEdge, rightEdge, dashes }
+    const fencePosts: { position: THREE.Vector3; color: string }[] = []
+    const leftFenceTop: THREE.Vector3[] = []
+    const leftFenceMid: THREE.Vector3[] = []
+    const rightFenceTop: THREE.Vector3[] = []
+    const rightFenceMid: THREE.Vector3[] = []
+    const fenceOffset = half + 0.55
+    const postCount = 88
+
+    for (let i = 0; i <= postCount; i++) {
+      const t = i / postCount
+      const point = roadCurve.getPointAt(t)
+      const tangent = roadCurve.getTangentAt(t).normalize()
+      const side = new THREE.Vector3().crossVectors(tangent, UP).normalize()
+      const left = point.clone().add(side.clone().multiplyScalar(fenceOffset))
+      const right = point.clone().add(side.clone().multiplyScalar(-fenceOffset))
+
+      fencePosts.push({ position: left.clone().setY(0.58), color: "#7a787d" })
+      fencePosts.push({ position: right.clone().setY(0.58), color: "#7a787d" })
+      leftFenceTop.push(left.clone().setY(1.1))
+      leftFenceMid.push(left.clone().setY(0.62))
+      rightFenceTop.push(right.clone().setY(1.1))
+      rightFenceMid.push(right.clone().setY(0.62))
+    }
+
+    return { geometry, leftEdge, rightEdge, dashes, fencePosts, leftFenceTop, leftFenceMid, rightFenceTop, rightFenceMid }
   }, [])
 
   return (
@@ -65,12 +89,31 @@ export function Road() {
       </mesh>
 
       {/* Neon edges */}
-      <Line points={leftEdge} color="#00f0ff" lineWidth={3} toneMapped={false} />
-      <Line points={rightEdge} color="#ff2d95" lineWidth={3} toneMapped={false} />
+      <Line points={leftEdge} color="#2c696d" lineWidth={3} toneMapped={false} />
+      <Line points={rightEdge} color="#2c696d" lineWidth={3} toneMapped={false} />
 
       {/* Center dashes */}
       {dashes.map((seg, i) => (
         <Line key={i} points={seg} color="#ffd23f" lineWidth={2} toneMapped={false} />
+      ))}
+
+      {/* Guard fences */}
+      <Line points={leftFenceTop} color="#2c696d" lineWidth={2.5} toneMapped={false} />
+      <Line points={leftFenceMid} color="#2c696d" lineWidth={1.6} toneMapped={false} />
+      <Line points={rightFenceTop} color="#2c696d" lineWidth={2.5} toneMapped={false} />
+      <Line points={rightFenceMid} color="#2c696d" lineWidth={1.6} toneMapped={false} />
+
+      {fencePosts.map((post, i) => (
+        <mesh key={i} position={post.position} castShadow>
+          <boxGeometry args={[0.22, 1.15, 0.22]} />
+          <meshStandardMaterial
+            color={post.color}
+            emissive={post.color}
+            emissiveIntensity={1.45}
+            roughness={0.35}
+            toneMapped={false}
+          />
+        </mesh>
       ))}
     </group>
   )

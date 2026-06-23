@@ -55,11 +55,13 @@ const sunVertex = /* glsl */ `
 
 export function SynthwaveEnvironment() {
   const sky = useRef<THREE.Group>(null)
+  const floor = useRef<THREE.Group>(null)
   const { camera } = useThree()
 
   // Keep the sky dome centered on the camera so the gradient never runs out.
   useFrame(() => {
     if (sky.current) sky.current.position.copy(camera.position)
+    if (floor.current) floor.current.position.set(camera.position.x, 0, camera.position.z)
   })
 
   return (
@@ -96,18 +98,20 @@ export function SynthwaveEnvironment() {
       </mesh>
 
       {/* Neon grid floor */}
-      <Grid
-        position={[0, 0, 0]}
-        infiniteGrid
-        cellSize={2.5}
-        cellThickness={0.8}
-        cellColor="#5a2a9c"
-        sectionSize={12}
-        sectionThickness={1.5}
-        sectionColor="#ff2d95"
-        fadeDistance={340}
-        fadeStrength={2}
-      />
+      <group ref={floor}>
+        <Grid
+          position={[0, 0, 0]}
+          infiniteGrid
+          cellSize={2.5}
+          cellThickness={0.8}
+          cellColor="#5a2a9c"
+          sectionSize={12}
+          sectionThickness={1.5}
+          sectionColor="#ff2d95"
+          fadeDistance={650}
+          fadeStrength={1.8}
+        />
+      </group>
     </>
   )
 }
