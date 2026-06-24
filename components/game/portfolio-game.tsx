@@ -32,7 +32,7 @@ function ModeSelect({
           <button
             type="button"
             onClick={() => onSelect("desktop")}
-            className="flex min-h-32 flex-col items-center justify-center rounded-lg border border-[#00f0ff]/55 bg-[#00f0ff]/10 px-4 py-5 text-[#00f0ff] transition hover:bg-[#00f0ff]/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f0ff]"
+            className="flex min-h-32 flex-col cursor-pointer items-center justify-center rounded-lg border border-[#00f0ff]/55 bg-[#00f0ff]/10 px-4 py-5 text-[#00f0ff] transition hover:bg-[#00f0ff]/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f0ff]"
           >
             <Monitor className="h-9 w-9" />
             <span className="mt-3 text-sm font-bold uppercase tracking-[0.22em]">Desktop</span>
@@ -41,7 +41,7 @@ function ModeSelect({
           <button
             type="button"
             onClick={() => onSelect("touch")}
-            className="flex min-h-32 flex-col items-center justify-center rounded-lg border border-[#ff2d95]/55 bg-[#ff2d95]/10 px-4 py-5 text-[#ff2d95] transition hover:bg-[#ff2d95]/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff2d95]"
+            className="flex min-h-32 flex-col cursor-pointer items-center justify-center rounded-lg border border-[#ff2d95]/55 bg-[#ff2d95]/10 px-4 py-5 text-[#ff2d95] transition hover:bg-[#ff2d95]/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff2d95]"
           >
             <Smartphone className="h-9 w-9" />
             <span className="mt-3 text-sm font-bold uppercase tracking-[0.22em]">Mobile</span>
@@ -50,7 +50,7 @@ function ModeSelect({
           <button
             type="button"
             onClick={() => onSelect("menu")}
-            className="flex min-h-32 flex-col items-center justify-center rounded-lg border border-[#b14aff]/55 bg-[#b14aff]/10 px-4 py-5 text-[#b14aff] transition hover:bg-[#b14aff]/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b14aff]"
+            className="flex min-h-32 flex-col cursor-pointer items-center justify-center rounded-lg border border-[#b14aff]/55 bg-[#b14aff]/10 px-4 py-5 text-[#b14aff] transition hover:bg-[#b14aff]/18 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b14aff]"
           >
             <Menu className="h-9 w-9" />
             <span className="mt-3 text-sm font-bold uppercase tracking-[0.22em]">Menu</span>

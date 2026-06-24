@@ -156,10 +156,10 @@ export function Hud({ stateRef, onOpenMenu }: { stateRef: React.MutableRefObject
         {onOpenMenu && (
           <button
             onClick={onOpenMenu}
-            className="pointer-events-auto flex items-center justify-center gap-2 rounded-lg border border-[#b14aff]/50 bg-[#b14aff]/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#b14aff] transition hover:bg-[#b14aff]/20 hover:border-[#b14aff]/70"
+            className="pointer-events-auto cursor-pointer flex items-center justify-center gap-2 rounded-lg border border-[#55c6ff]/50 bg-[#000000]/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#b14aff] transition hover:bg-[#b14aff]/20 hover:border-[#b14aff]/70"
           >
             <Menu className="h-4 w-4" />
-            <span>Menu</span>
+            <span className="bold">Menu</span>
           </button>
         )}
       </div>

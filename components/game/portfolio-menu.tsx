@@ -141,7 +141,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
 
             <button
               onClick={() => setSelectedCategory("experience")}
-              className="w-full p-6 rounded-lg border border-[#ff2d95]/45 bg-[#ff2d95]/10 hover:bg-[#ff2d95]/18 transition text-left"
+              className="w-full p-6 rounded-lg cursor-pointer border border-[#ff2d95]/45 bg-[#ff2d95]/10 hover:bg-[#ff2d95]/18 transition text-left"
             >
               <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#ff2d95] mb-2">
                 Categoria
@@ -156,7 +156,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
 
             <button
               onClick={() => setSelectedCategory("education")}
-              className="w-full p-6 rounded-lg border border-[#ffd23f]/45 bg-[#ffd23f]/10 hover:bg-[#ffd23f]/18 transition text-left"
+              className="w-full p-6 rounded-lg cursor-pointer border border-[#ffd23f]/45 bg-[#ffd23f]/10 hover:bg-[#ffd23f]/18 transition text-left"
             >
               <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#ffd23f] mb-2">
                 Categoria
@@ -171,7 +171,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
 
             <button
               onClick={onClose}
-              className="w-full p-4 rounded-lg border border-[#00f0ff]/35 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/12 transition text-center"
+              className="w-full p-4 rounded-lg border cursor-pointer border-[#00f0ff]/35 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/12 transition text-center"
             >
               <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#00f0ff]">
                 ← Voltar ao jogo
@@ -183,7 +183,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
           <div>
             <button
               onClick={() => setSelectedCategory(null)}
-              className="mb-6 flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-[#00f0ff] hover:text-[#00f0ff]/80 transition"
+                className="mb-6 flex items-center cursor-pointer gap-2 text-sm font-bold uppercase tracking-[0.16em] text-[#00f0ff] hover:text-[#00f0ff]/80 transition"
             >
               ← Voltar
             </button>
@@ -194,7 +194,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
                   <button
                     key={item.id}
                     onClick={() => setSelectedItem(item)}
-                    className="w-full p-4 rounded-lg border transition text-left"
+                    className="w-full p-4 rounded-lg border cursor-pointer transition text-left"
                     style={{
                       borderColor: item.accent + "55",
                       backgroundColor: item.accent + "12",
@@ -226,7 +226,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
 
             <button
               onClick={onClose}
-              className="w-full mt-6 p-4 rounded-lg border border-[#00f0ff]/35 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/12 transition text-center"
+              className="w-full mt-6 p-4 rounded-lg border cursor-pointer border-[#00f0ff]/35 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/12 transition text-center"
             >
               <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#00f0ff]">
                 ← Voltar ao jogo
