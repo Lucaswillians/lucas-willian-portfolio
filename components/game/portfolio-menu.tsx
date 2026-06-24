@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { ExternalLink, Mail, Phone, X } from "lucide-react"
-import { CONTACTS, SECTIONS, type BillboardSection } from "@/lib/portfolio-data"
+import { CONTACTS, INTRO_MENU, SECTIONS, type BillboardSection } from "@/lib/portfolio-data"
 import type { ComponentType } from "react"
 
 function GithubIcon({ className }: { className?: string }) {
@@ -29,7 +29,7 @@ const CONTACT_ICON: Record<"email" | "phone" | "github" | "linkedin", ComponentT
 }
 
 export function PortfolioMenu({ onClose }: { onClose: () => void }) {
-  const [selectedCategory, setSelectedCategory] = useState<"experience" | "education" | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<"experience" | "education" | "about" | "contacts" | null>(null)
   const [selectedItem, setSelectedItem] = useState<BillboardSection | null>(null)
 
   const experiences = SECTIONS.filter((s) => s.kind === "experience")
@@ -140,6 +140,21 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
             </div>
 
             <button
+              onClick={() => setSelectedCategory("about")}
+              className="w-full p-6 rounded-lg cursor-pointer border border-[#00f0ff]/45 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/18 transition text-left"
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#00f0ff] mb-2">
+                Seção
+              </p>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Sobre mim
+              </h3>
+              <p className="text-sm text-white/70">
+                Conheça melhor meu perfil, habilidades e estilo de trabalho.
+              </p>
+            </button>
+
+            <button
               onClick={() => setSelectedCategory("experience")}
               className="w-full p-6 rounded-lg cursor-pointer border border-[#ff2d95]/45 bg-[#ff2d95]/10 hover:bg-[#ff2d95]/18 transition text-left"
             >
@@ -170,6 +185,21 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
             </button>
 
             <button
+              onClick={() => setSelectedCategory("contacts")}
+              className="w-full p-6 rounded-lg cursor-pointer border border-[#b14aff]/45 bg-[#b14aff]/10 hover:bg-[#b14aff]/18 transition text-left"
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#b14aff] mb-2">
+                Seção
+              </p>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Contatos
+              </h3>
+              <p className="text-sm text-white/70">
+                Encontre meus dados de contato direto do menu.
+              </p>
+            </button>
+
+            <button
               onClick={onClose}
               className="w-full p-4 rounded-lg border cursor-pointer border-[#00f0ff]/35 bg-[#00f0ff]/5 hover:bg-[#00f0ff]/12 transition text-center"
             >
@@ -183,46 +213,87 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
           <div>
             <button
               onClick={() => setSelectedCategory(null)}
-                className="mb-6 flex items-center cursor-pointer gap-2 text-sm font-bold uppercase tracking-[0.16em] text-[#00f0ff] hover:text-[#00f0ff]/80 transition"
+              className="mb-6 flex items-center cursor-pointer gap-2 text-sm font-bold uppercase tracking-[0.16em] text-[#00f0ff] hover:text-[#00f0ff]/80 transition"
             >
               ← Voltar
             </button>
 
-            <div className="space-y-3">
-              {(selectedCategory === "experience" ? experiences : [...education, ...projects]).map(
-                (item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedItem(item)}
-                    className="w-full p-4 rounded-lg border cursor-pointer transition text-left"
-                    style={{
-                      borderColor: item.accent + "55",
-                      backgroundColor: item.accent + "12",
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <p
-                          className="text-xs font-bold uppercase tracking-[0.24em] mb-1"
-                          style={{ color: item.accent }}
-                        >
-                          {item.kind === "experience"
-                            ? "Experiência"
-                            : item.kind === "education"
-                              ? "Formação"
-                              : "Projeto"}
-                        </p>
-                        <h4 className="text-lg font-bold text-white">{item.title}</h4>
-                        {item.subtitle && (
-                          <p className="text-xs text-white/60 mt-1">{item.subtitle}</p>
-                        )}
+            {selectedCategory === "about" ? (
+              <div className="rounded-2xl border border-[#00f0ff]/35 bg-[#01030f]/80 p-6 shadow-[0_0_32px_rgba(0,240,255,0.2)]">
+                <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#00f0ff] mb-3">Sobre mim</p>
+                <h2 className="text-3xl font-bold text-white mb-4">{INTRO_MENU.title}</h2>
+                {INTRO_MENU.subtitle && (
+                  <p className="text-sm text-white/70 mb-4">{INTRO_MENU.subtitle}</p>
+                )}
+                <div className="space-y-4">
+                  {INTRO_MENU.lines.map((line, idx) => (
+                    <p key={idx} className="text-sm leading-relaxed text-white/80">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : selectedCategory === "contacts" ? (
+              <div className="grid gap-4">
+                {CONTACTS.map((contact) => {
+                  const Icon = CONTACT_ICON[contact.kind]
+                  return (
+                    <a
+                      key={contact.kind}
+                      href={contact.href}
+                      target={contact.kind === "email" || contact.kind === "phone" ? undefined : "_blank"}
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/5 px-5 py-4 text-left transition hover:border-[#b14aff]/40 hover:bg-[#b14aff]/10"
+                    >
+                      <span className="flex items-center gap-3">
+                        <Icon className="h-5 w-5 text-[#b14aff]" />
+                        <span>
+                          <span className="block text-[10px] uppercase tracking-[0.3em] text-white/50">{contact.label}</span>
+                          <span className="block text-sm font-bold text-white">{contact.value}</span>
+                        </span>
+                      </span>
+                      <ExternalLink className="h-4 w-4 text-white/70" />
+                    </a>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(selectedCategory === "experience" ? experiences : [...education, ...projects]).map(
+                  (item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedItem(item)}
+                      className="w-full p-4 rounded-lg border cursor-pointer transition text-left"
+                      style={{
+                        borderColor: item.accent + "55",
+                        backgroundColor: item.accent + "12",
+                      }}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <p
+                            className="text-xs font-bold uppercase tracking-[0.24em] mb-1"
+                            style={{ color: item.accent }}
+                          >
+                            {item.kind === "experience"
+                              ? "Experiência"
+                              : item.kind === "education"
+                                ? "Formação"
+                                : "Projeto"}
+                          </p>
+                          <h4 className="text-lg font-bold text-white">{item.title}</h4>
+                          {item.subtitle && (
+                            <p className="text-xs text-white/60 mt-1">{item.subtitle}</p>
+                          )}
+                        </div>
+                        <ExternalLink className="h-4 w-4 shrink-0" style={{ color: item.accent }} />
                       </div>
-                      <ExternalLink className="h-4 w-4 flex-shrink-0" style={{ color: item.accent }} />
-                    </div>
-                  </button>
-                )
-              )}
-            </div>
+                    </button>
+                  )
+                )}
+              </div>
+            )}
 
             <button
               onClick={onClose}

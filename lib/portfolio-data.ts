@@ -47,6 +47,16 @@ export const CONTACTS: Contact[] = [
   },
 ]
 
+export const INTRO_MENU = {
+  title: "Sobre mim",
+  subtitle: "Engenheiro de Software · Full Stack",
+  lines: [
+    "Engenheiro de Software, especializado no desenvolvimento de soluções back-end com Node.js, JavaScript e TypeScript. Experiência na concepção e implementação de APIs, microsserviços e sistemas distribuídos, com foco em escalabilidade, segurança, observabilidade e alta disponibilidade. Atuo na definição de arquiteturas, modelagem de domínio, implementação de regras de negócio, integrações entre sistemas, autenticação e autorização, processamento assíncrono, mensageria, cache e otimização de aplicações críticas para produção. Possuo experiência com bancos de dados SQL e NoSQL, garantindo eficiência, consistência e desempenho em diferentes cenários de negócio. Adoto boas práticas de engenharia de software, incluindo SOLID, Clean Code, Design Patterns, testes automatizados, revisão de código e CI/CD, contribuindo para a construção de soluções robustas e sustentáveis a longo prazo. Complemento minha atuação com desenvolvimento front-end utilizando React.js e Next.js, criando interfaces modernas, performáticas e alinhadas às necessidades do negócio.",
+    "",
+    "Explore meu portfólio para conhecer os projetos e desafios que marcaram minha trajetória profissional."
+  ],
+}
+
 // Neon palette
 const PINK = "#ff2d95"
 const CYAN = "#00f0ff"
@@ -195,7 +205,7 @@ export const SECTIONS: BillboardSection[] = [
     ],
     tech: ["NestJS", "Redis", "Docker"],
     link: "https://github.com/Lucaswillians/payflow",
-    accent: PURPLE,
+    accent: CYAN,
     side: "right",
     t: 0.85,
   },
