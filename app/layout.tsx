@@ -13,23 +13,12 @@ export const metadata: Metadata = {
   title: 'Lucas Willian · Engenheiro de Software',
   description:
     'Portfólio gamificado de Lucas Willian — dirija um carro neon por uma estrada synthwave e conheça experiências, formação e projetos.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/icon-web.png',
       },
     ],
-    apple: '/apple-icon.png',
   },
 }
 

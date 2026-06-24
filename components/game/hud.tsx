@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, type ComponentType } from "react"
-import { ExternalLink, Mail, Phone } from "lucide-react"
+import { ExternalLink, Mail, Phone, Menu } from "lucide-react"
 import type { CarState } from "./car"
 import { CONTACTS, SECTIONS, type BillboardSection, type Contact } from "@/lib/portfolio-data"
 import { BILLBOARD_DISTANCE_FROM_ROAD, pointBesideRoad, ROAD_WIDTH } from "@/lib/road-path"
@@ -66,7 +66,7 @@ function getRouteNotice(section: BillboardSection): RouteNotice | null {
   return null
 }
 
-export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }) {
+export function Hud({ stateRef, onOpenMenu }: { stateRef: React.MutableRefObject<CarState>, onOpenMenu?: () => void }) {
   const bar = useRef<HTMLDivElement>(null)
   const speedEl = useRef<HTMLSpanElement>(null)
   const [moved, setMoved] = useState(false)
@@ -143,14 +143,25 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
       </div>
 
       {/* Speedometer */}
-      <div className="absolute right-4 top-4 text-right md:right-8 md:top-6">
-        <span
-          ref={speedEl}
-          className="text-2xl font-bold text-[#ffd23f] drop-shadow-[0_0_8px_rgba(255,210,63,0.8)] md:text-4xl"
-        >
-          0
-        </span>
-        <span className="ml-1 text-xs tracking-widest text-[#ffd23f]/70">KM/H</span>
+      <div className="absolute right-4 top-4 md:right-8 md:top-6 flex flex-col items-end gap-2">
+        <div className="text-right">
+          <span
+            ref={speedEl}
+            className="text-2xl font-bold text-[#ffd23f] drop-shadow-[0_0_8px_rgba(255,210,63,0.8)] md:text-4xl"
+          >
+            0
+          </span>
+          <span className="ml-1 text-xs tracking-widest text-[#ffd23f]/70">KM/H</span>
+        </div>
+        {onOpenMenu && (
+          <button
+            onClick={onOpenMenu}
+            className="pointer-events-auto flex items-center justify-center gap-2 rounded-lg border border-[#b14aff]/50 bg-[#b14aff]/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#b14aff] transition hover:bg-[#b14aff]/20 hover:border-[#b14aff]/70"
+          >
+            <Menu className="h-4 w-4" />
+            <span>Menu</span>
+          </button>
+        )}
       </div>
 
       {/* Route notice */}
@@ -185,9 +196,8 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
 
       {/* Controls hint */}
       <div
-        className={`absolute bottom-4 left-1/2 -translate-x-1/2 rounded-lg border border-[#00f0ff]/40 bg-black/50 px-4 py-2 text-center backdrop-blur-sm transition-opacity duration-700 md:bottom-6 ${
-          moved ? "opacity-0" : "opacity-100"
-        }`}
+        className={`absolute bottom-4 left-1/2 -translate-x-1/2 rounded-lg border border-[#00f0ff]/40 bg-black/50 px-4 py-2 text-center backdrop-blur-sm transition-opacity duration-700 md:bottom-6 ${moved ? "opacity-0" : "opacity-100"
+          }`}
       >
         <p className="text-xs tracking-widest text-[#00f0ff] md:text-sm">
           {"↑ ACELERAR   ↓ FREAR   ← → VIRAR"}
@@ -197,9 +207,8 @@ export function Hud({ stateRef }: { stateRef: React.MutableRefObject<CarState> }
       {/* Botão de projeto — aparece ao chegar perto da placa */}
       {showProjectCard && active && (
         <div
-          className={`pointer-events-auto absolute left-1/2 w-[88%] max-w-xs -translate-x-1/2 ${
-            notice ? "top-40 md:top-44" : "top-20 md:top-24"
-          }`}
+          className={`pointer-events-auto absolute left-1/2 w-[88%] max-w-xs -translate-x-1/2 ${notice ? "top-40 md:top-44" : "top-20 md:top-24"
+            }`}
         >
           <div
             className="rounded-xl border bg-black/70 p-4 text-center backdrop-blur-md"
