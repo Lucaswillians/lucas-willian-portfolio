@@ -126,7 +126,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="pointer-events-auto absolute inset-0 z-50 flex items-center justify-center bg-[#080112]/95 px-4 font-mono backdrop-blur-lg">
-      <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto md:max-h-none md:overflow-visible">
         {!selectedCategory ? (
           // Category selection
           <div className="space-y-4">
@@ -219,7 +219,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
             </button>
 
             {selectedCategory === "about" ? (
-              <div className="rounded-2xl border border-[#00f0ff]/35 bg-[#01030f]/80 p-6 shadow-[0_0_32px_rgba(0,240,255,0.2)] max-h-[80vh] overflow-y-auto">
+              <div className="rounded-2xl border border-[#00f0ff]/35 bg-[#01030f]/80 p-6 shadow-[0_0_32px_rgba(0,240,255,0.2)] max-h-[80vh] overflow-y-auto md:max-h-none md:overflow-visible">
                 <p className="text-xs font-bold uppercase tracking-[0.32em] text-[#00f0ff] mb-3">Sobre mim</p>
                 <h2 className="text-3xl font-bold text-white mb-4">{INTRO_MENU.title}</h2>
                 {INTRO_MENU.subtitle && (
@@ -234,7 +234,7 @@ export function PortfolioMenu({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
             ) : selectedCategory === "contacts" ? (
-              <div className="grid gap-4 max-h-[80vh] overflow-y-auto">
+              <div className="grid gap-4 max-h-[80vh] overflow-y-auto md:max-h-none md:overflow-visible">
                 {CONTACTS.map((contact) => {
                   const Icon = CONTACT_ICON[contact.kind]
                   return (
